@@ -60,10 +60,11 @@ extern "C" {
 #ifdef WIN32
 #include <Windows.h>
 #else
+#include <stdint.h>
 typedef unsigned char   BYTE;
 typedef unsigned short  WORD;
-typedef unsigned long   DWORD;
-typedef long            LONG;
+typedef uint32_t   DWORD;
+typedef uint32_t   LONG;
 
 #pragma pack(push)
 // 2×Ö½Ú¶ÔÆë£¬¹²14
