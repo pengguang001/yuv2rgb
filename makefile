@@ -14,3 +14,6 @@ clean:
 
 test: bmp_utils.c test.c
 	gcc $^ -o $@
+
+gen:
+	make -C fill_yuv

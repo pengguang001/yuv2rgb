@@ -180,9 +180,7 @@ void fill_yuv_yuv420_1(unsigned char* buffer, int width, int height)
     }
 }
 
-// yuv420
-// 竖条
-// 还有问题，继续找
+/* yuv420planar */
 void fill_yuv_yuv420_2(unsigned char* buffer, int width, int height)
 {
     unsigned char *src = buffer;
@@ -220,6 +218,48 @@ void fill_yuv_yuv420_2(unsigned char* buffer, int width, int height)
             p_y += 4;
             p_u += 1;
             p_v += 1;
+            }
+        }
+    }
+}
+
+/* nv21 */
+void fill_yuv_yuv420sp_nv21(unsigned char* buffer, int width, int height)
+{
+    unsigned char *src = buffer;
+    int i, j, k;
+    unsigned char* p_y;
+    unsigned char* p_u;
+    unsigned char* p_v;
+
+    p_y = src;
+    p_v = p_y + width * height;
+    p_u = p_v+1;
+
+    // 计出每种颜色有多少像素
+    int slice = width / YUV_NUM;
+
+    printf("slice: %d\n", slice);
+    for (i = 0; i < height; i++)
+    {
+        // 按竖条填充每一行的像素
+        for (j = 0; j < (int)YUV_NUM; j++)
+        {
+            int index = j;
+            unsigned char y = (g_test_yuv[index] & 0xff0000 ) >> 16;
+            unsigned char u = (g_test_yuv[index] & 0x00ff00) >> 8;
+            unsigned char v = (g_test_yuv[index] & 0x0000ff);
+            for (k = 0; k < slice; k ++)    // 一种颜色
+            {
+                p_y[0] = y;
+                p_y++;
+
+                if (i%2==0 && (j*slice+k)%2==0) {
+                    p_u[0] = u;
+                    p_v[0] = v;
+                    p_u += 2;
+                    p_v += 2;
+                }
             }
         }
     }

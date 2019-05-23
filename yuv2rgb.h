@@ -144,6 +144,7 @@ void yuv420_to_rgb24_2(unsigned char *yuv420, unsigned char *rgb24, int width, i
 
 void yuv420_to_rgb24_3(unsigned char* yuv, unsigned char* rgb, int width, int height);
 
+void yuv420sp_nv21_to_rgb24(unsigned char* yuv420, unsigned char* rgb, int width, int height);
 #ifdef __cplusplus
 }
 #endif

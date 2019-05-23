@@ -70,7 +70,7 @@ int write_file(const char* filename, char* buffer, int len)
     int real_len = 0;
     int ret = 0;
 
-    fp = fopen(tmp_file, "ab");
+    fp = fopen(tmp_file, "wb");
     if (fp == NULL)
     {
         printf("=====error open file: %s.\n", tmp_file);

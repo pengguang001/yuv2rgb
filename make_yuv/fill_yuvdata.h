@@ -69,6 +69,7 @@ void fill_yuv_yuv420_1(unsigned char* buffer, int width, int height);
  * @param height: Í¼Ïñ¸ß
  */
 void fill_yuv_yuv420_2(unsigned char* buffer, int width, int height);
+void fill_yuv_yuv420sp_nv21(unsigned char* buffer, int width, int height);
 
 #ifdef __cplusplus
 }

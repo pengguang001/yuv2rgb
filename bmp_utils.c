@@ -428,7 +428,7 @@ int write_bmp_file(const char* bmp_file, unsigned char* rgb_buffer, int width, i
     // 实际未使用到
     padding = stride_byte - width_byte;
 
-    printf("debug--:\nwidth: %d height: %d padding: %d rgb_size: %d, stride_byte: %d\n",
+    printf("width: %d height: %d padding: %d rgb_size: %d, stride_byte: %d\n",
                 width, height, padding, rgb_size, stride_byte);
 
     // 为方便调整图片，另开辟临时缓冲区

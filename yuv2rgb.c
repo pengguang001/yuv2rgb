@@ -275,6 +275,75 @@ void yuv420p_to_rgb24(unsigned char* yuvbuffer,unsigned char* rgbbuffer, int wid
     }
 }
 
+uint8_t clamp(int v, uint8_t min, uint8_t max) {
+    if (v < min) return min;
+    if (v > max) return max;
+    return v;
+}
+
+int yuv2rgb1(uint8_t y, uint8_t u, uint8_t v,
+        uint8_t **rgb) {
+    int rTmp = y + (1.370705 * (v-128));
+    int gTmp = y - (0.698001 * (v-128)) - (0.337633 * (u-128));
+    int bTmp = y + (1.732446 * (u-128));
+    (*rgb)[0] = clamp(rTmp, 0, 255);
+    (*rgb)[1] = clamp(gTmp, 0, 255);
+    (*rgb)[2] = clamp(bTmp, 0, 255);
+
+    (*rgb) += 3;
+}
+
+void yuv420sp_nv21_to_rgb24(unsigned char* yuvbuffer,unsigned char* rgbbuffer, int width,int height)   
+{
+    int y1, y2, u, v;    
+    unsigned char *py1, *py2;   
+    int i, j, c1, c2, c3, c4;   
+    unsigned char *d1, *d2;   
+    unsigned char *src_u, *src_v;
+    static int init_yuv420p = 0;
+    
+    src_v = yuvbuffer + width * height;
+    src_u = src_v + 1;
+
+    py1 = yuvbuffer;   // y
+    py2 = py1 + width;   
+    d1 = rgbbuffer;   
+    d2 = d1 + 3 * width;   
+
+    uint8_t r, g, b;
+
+    for (j = 0; j < height; j += 2)    
+    {    
+        for (i = 0; i < width; i += 2)    
+        {
+            u = *src_u;   
+            v = *src_v;   
+            src_u += 2;
+            src_v += 2;
+   
+            c1 = crv_tab[v];   
+            c2 = cgu_tab[u];   
+            c3 = cgv_tab[v];   
+            c4 = cbu_tab[u];   
+   
+            //up-left   
+            yuv2rgb1(*py1++, u, v, &d1);
+   
+            //down-left   
+            yuv2rgb1(*py2++, u, v, &d2);
+   
+            //up-right   
+            yuv2rgb1(*py1++, u, v, &d1);
+   
+            //down-right   
+            yuv2rgb1(*py2++, u, v, &d2);
+        }
+        d1  += 3*width;
+        d2  += 3*width;
+        py1 += width;
+        py2 += width;
+    }
+}
 /**
 ÄÚ´æ·Ö²¼
                     w

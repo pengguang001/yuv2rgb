@@ -30,14 +30,14 @@ CFLAGS := -Wall
 
 #****************************************************************************
 # debug can be set to y to include debugging info, or n otherwise
-debug          := y
+debug          := n
 
 #****************************************************************************
 
 ifeq ($(debug), y)
 CFLAGS += -ggdb -rdynamic
 else
-CFLAGS += -O2 -s
+CFLAGS += -O2
 endif
 
 # !!!===
@@ -62,30 +62,40 @@ LDFLAGS +=
 SRC_C   := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
 
+SRC_COMMON :=  file_utils.c   fill_yuvdata.c
+SRC_NV21 := $(SRC_COMMON) nv21.c
+OBJ_NV21 := $(patsubst %.c,%.o,$(SRC_NV21))
+SRC_YUV420P := $(SRC_COMMON) yuv420p.c
+OBJ_YUV420P := $(patsubst %.c,%.o,$(SRC_YUV420P))
+
 # object file(s)
 OBJ_C   := $(patsubst %.c,%.o,$(SRC_C))
 OBJ_CPP := $(patsubst %.cpp,%.o,$(SRC_CPP))
 
 # !!!===
 # executable file
-target = a.out
+target = nv21 yuv420p
 
 ###############################################################################
 
 all: $(target)
 
-$(target): $(OBJ_C) $(OBJ_CPP)
-	@echo "Generating executable file..." $(notdir $(target))
-	@$(CXX) $(CFLAGS) $^ -o $(target) $(LDFLAGS)
+nv21: $(OBJ_NV21)
+	@$(CC) $(CFLAGS) $^ -o $@
+	@echo "Generating:" $@
+
+yuv420p: $(OBJ_YUV420P)
+	@$(CC) $(CFLAGS) $^ -o $@
+	@echo "Generating:" $@
 
 # make all .c or .cpp
 %.o: %.c
 	@echo "Compiling: " $(addsuffix .c, $(basename $(notdir $@)))
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $^ -o $@
 
 %.o: %.cpp
 	@echo "Compiling: " $(addsuffix .cpp, $(basename $(notdir $@)))
-	@$(CXX) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $^ -o $@
 
 clean:
 	@echo "Cleaning..."
