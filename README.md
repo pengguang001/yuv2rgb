@@ -1,4 +1,5 @@
 to convert nv21 to bmp
+
 ./yuv2rgb 320 240 nv21.yuv colorbar.bmp
 
 
